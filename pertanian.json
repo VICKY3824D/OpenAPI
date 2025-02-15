@@ -1,14 +1,14 @@
 {
     "openapi" : "3.0.3",
     "info" : {
-        "title" : "TodoList RESTful API",
-        "description" : "OpenAPI for TodoList RESTful API",
-        "version" : "1",
+        "title" : "Farming RESTful API",
+        "description" : "OpenAPI for Farming RESTful API",
+        "version" : "3",
         "contact" : {
             "name" : "Vidky Adhi Pradana",
-            "email" : "vidky@gmail.com",
-            "url" : "https://www.programmerzamannow.com"
-        }, 
+            "email" : "vickypradana1111@gmail.com",
+            "url" : ""
+        },
         "license" : {
             "name" : "APACHE 2.0",
             "url" : "https://www.apache.org/licenses/LICENSE-2.0"
@@ -16,71 +16,21 @@
     },
     "servers" : [
         {
-            "url" : "https://{environment}.programmerzamannow.com/api/v1",
-            "variables":{
-                "environment": {
-                    "description" : "Server Environment",
-                    "default" : "dev",
-                    "enum" : [
-                        "dev",
-                        "qa",
-                        "prod"
-                    ]
-                }
-            }
+            "url" : "http://localhost:8000/v3"
         }
     ],
-    "externalDocs" : {
-        "description" : "Youtube Vidky Adhi",
-        "url" : "https://www.youtube.com/"
-    },
-    "paths": {
-        "/todolist" : {
+    "paths" : {
+        "/tanaman" : {
             "get" : {
-                "summary" : "Get all todolist",
-                "description" : "Get all active todolist by default",
-                "parameters" : [
-                    {
-                        "name" : "include_done",
-                        "in" : "query",
-                        "required" : false,
-                        "description" : "Is include done todolist",
-                        "schema" : {
-                            "type" : "boolean",
-                            "nullable" : true,
-                            "default" : false
-                        }
-                    },
-                    {
-                        "name" : "name",
-                        "in" : "query",
-                        "required" : false,
-                        "description" : "Filter todolist by name",
-                        "schema" : {
-                            "type" : "string",
-                            "nullable": true,
-                            "minLength" : 1,
-                            "maxLength" : 100
-                    },
-                        "examples" : {
-                            "java" : {
-                                "description" : "example name java",
-                                "value" : "Java"
-                            },
-                            "php" : {
-                                "description" : "example name PHP",
-                                "value" : "PHP"
-                            }
-                        }
-                    }
-                ],
+                "summary" : "Get all tanaman",
+                "description" : "Get all public tanaman by default",
                 "responses" : {
-                    
-                }
-            }, 
+
+                        }
+            },
             "post" : {
-                "summary" : "Create new todolist",
-                "description": "Create new todolist to database",
+                "summary" : "create new tanaman",
+                "description" : "create new tanaman with detail to database",
                 "requestBody" : {
                     "required" : true,
                     "content" : {
@@ -88,138 +38,66 @@
                             "schema" : {
                                 "type" : "object",
                                 "properties" : {
-                                    "name" : {
+                                    "nama_tanaman" : {
+                                        "description": "nama_tanaman must be unique",
                                         "type" : "string",
                                         "minLength" : 1,
-                                        "required" : true
+                                        "maxLength" : 100
                                     },
-                                    "priority" : {
-                                        "type" : "integer",
-                                        "format" : "int32",
-                                        "required" : true,
-                                        "default" : 1
+                                    "jenis" : {
+                                        "type" : "string",
+                                        "minLength" : 1,
+                                        "maxLength" : 100
                                     },
-                                    "tags" : {
-                                        "type" : "array",
-                                        "required" : false,
-                                        "minItems" : 1,
-                                        "items" : {
-                                            "type" : "string",
-                                            "minLength" : 1
+                                    "waktu_tanam_hari" : {
+                                        "type" : "number",
+                                        "minimum" : 1,
+                                        "maximum" : 2147483647                                       
+                                    },
+                                    "harga_perTon" : {
+                                        "type" : "number",
+                                        "minimum" : 1,
+                                        "maximum" : 2147483647
+                                    },
+                                    "peluang_hama" : {
+                                        "type" : "number",
+                                        "description" : "get Id hama from /hama"
+                                    }, 
+                                    "public" : {
+                                        "type" : "boolean",
+                                        "default" : true
+                                    }
+                                },
+                                "required" : [  "nama_tanaman",
+                                                "jenis", 
+                                                "waktu_tanam_hari",
+                                                "harga_perTon",
+                                                "peluang_hama",
+                                                "public"
+                                ],
+                                "examples" : {
+                                    "jeruk" : {
+                                        "description" : "example create tanaman jeruk",
+                                        "value" : {
+                                            "nama_tanaman" : "jeruk",
+                                            "jenis" : "pohon",
+                                            "waktu_tanam_hari" : 419,
+                                            "harga_perTon" : 2000000000,
+                                            "peluang_hama" : 2,
+                                            "public" : true
                                         }
                                     }
                                 }
-                            },
-                                "examples" : {
-                                "java" : {
-                                    "description" : "Example create todolist Java",
-                                    "value" : {
-                                        "name" : "Java",
-                                        "priority" : 3,
-                                        "tags" : [
-                                            "Java",
-                                            "Programming"
-                                        ]
-                                    }
-                                },
-                                "php" : {
-                                    "description" : "Example create todoList PHP",
-                                    "value" : {
-                                        "name" : "PHP",
-                                        "priority" : 1,
-                                        "tags" : ["PHP", "Cuan"]
-                                    }
-                                 }
                             }
                         }
                     }
-                },
-                "responses" : {
-
                 }
             }
         },
-        "/todolist/{todolistId}" : {
-            "put" : {
-                "summary" : "Update existing todolist",
-                "description" : "Update existing todolist in database",
-                "parameters" : [
-                    {
-                        "name" :"todolistId",
-                        "in": "path",
-                        "required" : true,
-                        "description" : "Todolist for updated",
-                        "schema" : {
-                            "type" : "string",
-                            "minLength" : 1,
-                            "maxLength": 100
-                         }
-                    }
-                ],
-                "requestBody" : {
-                    "required" : true,
-                    "content" : {
-                        "application/json" : {
-                            "schema" : {
-                                "type" : "object",
-                                "properties" : {
-                                    "name" : {
-                                        "type" : "string",
-                                        "minLength" : 1,
-                                        "required" : true
-                                    },
-                                    "priority" : {
-                                        "type" : "integer",
-                                        "format" : "int32",
-                                        "minLength" : 1,
-                                        "required" : true
-                                    },
-                                    "tags" : {
-                                        "type" : "array",
-                                        "required" : false,
-                                        "minItems" : 1,
-                                        "items" : {
-                                            "type" : "string",
-                                            "minLength" : 1
-                                        }
-                                    }
-                                }
-                            },
-                            "examples" : {
-                                "java" : {
-                                    "description" : "sample todoList id for java",
-                                    "value" : "1"
-                                },
-                                "php" : {
-                                    "description" : "simple todoList id for PHP",
-                                    "value" : "2"
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses" : {
+        "/hama" : {
+            "get" : {
 
-                }
-            },
-            "delete" : {
-                "summary" :"Delete existing todolist",
-                "description" : "Delete existing todolist in database",
-                "parameters" : [
-                    {
-                        "name" :"todolistId",
-                        "in": "path",
-                        "required" : true,
-                        "description" : "Todolist for deleted",
-                        "schema" : {
-                            "type" : "string"
-                        }
-                    }
-                ],
-                "responses" : {
-
-                }
             }
         }
-    }
+    }       
 }
